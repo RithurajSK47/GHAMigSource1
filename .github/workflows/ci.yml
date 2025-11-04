@@ -1,0 +1,96 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
+# built on .NET Core.
+# To learn how to migrate your existing application to .NET Core,
+# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
+#
+# To configure this workflow:
+#
+# 1. Configure environment variables
+# GitHub sets default environment variables for every workflow run.
+# Replace the variables relative to your project in the "env" section below.
+#
+# 2. Signing
+# Generate a signing certificate in the Windows Application
+# Packaging Project or add an existing signing certificate to the project.
+# Next, use PowerShell to encode the .pfx file using Base64 encoding
+# by running the following Powershell script to generate the output string:
+#
+# $pfx_cert = Get-Content '.\SigningCertificate.pfx' -Encoding Byte
+# [System.Convert]::ToBase64String($pfx_cert) | Out-File 'SigningCertificate_Encoded.txt'
+#
+# Open the output file, SigningCertificate_Encoded.txt, and copy the
+# string inside. Then, add the string to the repo as a GitHub secret
+# and name it "Base64_Encoded_Pfx."
+# For more information on how to configure your signing certificate for
+# this workflow, refer to https://github.com/microsoft/github-actions-for-desktop-apps#signing
+#
+# Finally, add the signing certificate password to the repo as a secret and name it "Pfx_Key".
+# See "Build the Windows Application Packaging project" below to see how the secret is used.
+#
+# For more information on GitHub Actions, refer to https://github.com/features/actions
+# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
+# refer to https://github.com/microsoft/github-actions-for-desktop-apps
+name: CI - Build & Artifact
+
+# Trigger the workflow on pushes to main (and optionally PRs)
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build and publish artifact
+    runs-on: ubuntu-latest
+    steps:
+
+      # 1) get repo source into the runner workspace
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) optionally cache NuGet packages to speed up builds
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-packages-${{ runner.os }}-${{ hashFiles('**/global.json','**/*.csproj') }}
+          restore-keys: |
+            nuget-packages-${{ runner.os }}-
+
+      # 3) set up the .NET SDK version (change '8.0.x' to the SDK you use)
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      # 4) restore dependencies (runs dotnet restore on the solution)
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # 5) build in Release configuration
+      - name: Build (Release)
+        run: dotnet build --no-restore -c Release
+
+      # 6) optional: run tests (uncomment if you have tests)
+      # - name: Test
+      #   run: dotnet test --no-build --verbosity normal
+
+      # 7) publish the app to a folder (self-contained if you want, below is framework-dependent)
+      - name: Publish artifact
+        run: |
+          # publish the project (adjust path to your .csproj if not at repo root)
+          dotnet publish ./GHAMigSource1/GHAMigSource1.csproj -c Release -o ./artifacts/publish
+
+      # 8) upload the published output as an artifact to the workflow run
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GHAMigSource1-build
+          path: artifacts/publish
+
