@@ -10,7 +10,7 @@
             b = int.Parse(Console.ReadLine());
             int sum = a + b;
 
-            Console.WriteLine($"The sum of two number is {sum}");
+            Console.WriteLine($"The sum of two number is {sum}")
         }
     }
 }
