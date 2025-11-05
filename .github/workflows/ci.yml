@@ -37,6 +37,9 @@
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 name: CI - Build & Artifact
 
+permissions:
+  contents: write
+
 # Trigger the workflow on pushes to main (and optionally PRs)
 on:
   push:
