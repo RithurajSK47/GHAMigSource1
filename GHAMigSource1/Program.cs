@@ -6,11 +6,20 @@
         {
             int a, b;
             Console.WriteLine("Enter the values of a and b");
-            a = int.Parse(Console.ReadLine());
-            b = int.Parse(Console.ReadLine());
-            int sum = a + b;
 
-            Console.WriteLine($"The sum of two number is {sum}");
+            string? inputA = Console.ReadLine();
+            string? inputB = Console.ReadLine();
+
+            if (int.TryParse(inputA, out a) && int.TryParse(inputB, out b))
+            {
+                int sum = a + b;
+                Console.WriteLine($"Sum = {sum}");
+            }
+            else
+            {
+                Console.WriteLine("Invalid input! Please enter valid integers.");
+            }
+
         }
     }
 }
