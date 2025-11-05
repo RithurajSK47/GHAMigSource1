@@ -13,7 +13,9 @@
             if (int.TryParse(inputA, out a) && int.TryParse(inputB, out b))
             {
                 int sum = a + b;
+                int diff = a - b;
                 Console.WriteLine($"Sum = {sum}");
+                Console.WriteLine($"Difference = {diff}");
             }
             else
             {
