@@ -93,27 +93,21 @@ jobs:
         with:
           name: GHAMigSource1-build
           path: artifacts/publish
-        release:
-    name: Create GitHub Release
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      # Step 1: Download the artifact produced by the build job
+      # Step 9: Download the artifact produced by the build job
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: GHAMigSource1-build
           path: ./release-artifacts
 
-      # Step 2: Compress the artifact into a zip
+      # Step 10: Compress the artifact into a zip
       - name: Create ZIP file
         run: |
           cd release-artifacts
           zip -r ../GHAMigSource1.zip .
           cd ..
 
-      # Step 3: Create a release and upload the ZIP as an asset
+      # Step 11: Create a release and upload the ZIP as an asset
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
