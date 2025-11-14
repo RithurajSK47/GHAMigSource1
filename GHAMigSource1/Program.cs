@@ -14,8 +14,10 @@
             {
                 int sum = a + b;
                 int diff = a - b;
+                int mul = a * b;
                 Console.WriteLine($"Sum = {sum}");
                 Console.WriteLine($"Difference = {diff}");
+                Console.WriteLine($"Product = {mul}");
             }
             else
             {
